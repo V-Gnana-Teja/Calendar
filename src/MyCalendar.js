@@ -1,95 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import Select from "./Select";
+
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedMonth, setSelectedMonth] = useState(selectedDate.getMonth());
-  const [selectedYear, setSelectedYear] = useState(selectedDate.getFullYear());
 
-  const daysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
+  const today = new Date();
 
-  const generateCalendar = () => {
-    const days = [];
-    const totalDays = daysInMonth(selectedMonth, selectedYear);
+  const [currentMonth, setCurrentMonth] = useState(parseInt(localStorage.getItem("selectedMonth")) || today.getMonth());
 
-    for (let i = 1; i <= totalDays; i++) {
-      days.push(i);
-    }
+  const [currentYear, setCurrentYear] = useState(parseInt(localStorage.getItem("selectedYear")) || today.getFullYear());
 
-    return days.map((day) => (
-      <div className="p-2 border border-gray-300 text-center" key={day}>
-        {day}
+  const [selectedDate, setSelectedDate] = useState(parseInt(localStorage.getItem("selectedDate")) || 1);
+
+  const [showDialog, setShowDialog] = useState(localStorage.getItem("showDialog") === "true");
+
+  const startDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  const days = [];
+  
+
+  useEffect(() => {
+
+    localStorage.setItem("selectedDate", selectedDate);
+
+    localStorage.setItem("selectedMonth", currentMonth);
+
+    localStorage.setItem("selectedYear", currentYear);
+
+    localStorage.setItem("showDialog", showDialog);
+
+  }, [selectedDate, currentMonth, currentYear, showDialog]);
+
+
+  for (let i = 0; i < startDayOfMonth; i++) {
+
+    days.push(
+
+      <div key={`empty-${i}`} className="border border-gray-300 p-4">
+
       </div>
-    ));
-  };
+
+    );
+  }
+
+  for (let i = 1; i <= daysInMonth; i++) {
+
+    const isSelected = selectedDate === i;
+    days.push(
+
+      <div key={i} className={`border border-gray-300 p-4 cursor-pointer ${isSelected ? "bg-red-500" : ""}`}
+        onClick={() => {
+          setSelectedDate(i);
+          setShowDialog(true);
+        }}
+      >
+        {i}
+
+      </div>
+
+    );
+  }
 
   const handleMonthChange = (event) => {
-    const newMonth = parseInt(event.target.value, 10);
-    setSelectedMonth(newMonth);
-    setSelectedDate(new Date(selectedYear, newMonth, 1));
+
+    setCurrentMonth(parseInt(event.target.value));
   };
 
   const handleYearChange = (event) => {
-    const newYear = parseInt(event.target.value, 10);
-    setSelectedYear(newYear);
-    setSelectedDate(new Date(newYear, selectedMonth, 1));
+
+    setCurrentYear(parseInt(event.target.value));
   };
 
   return (
-    <div className="max-w-xs mx-auto mt-8">
-      <div className="flex justify-between items-center mb-4">
-        <button
-          className="px-3 py-1 bg-blue-500 text-white rounded"
-          onClick={() => setSelectedDate(new Date(selectedYear, selectedMonth - 1, 1))}
-        >
-          Prev
-        </button>
-        <select className="px-3 py-1 bg-blue-500 text-white rounded" value={selectedMonth} onChange={handleMonthChange}>
+
+    <div className="flex flex-col items-center">
+
+      <div className="flex justify-center items-center my-4">
+
+        <select className="text-xl font-bold cursor-pointer" value={currentMonth} onChange={handleMonthChange}>
+
           {Array.from({ length: 12 }, (_, index) => (
+
             <option key={index} value={index}>
-              {new Date(selectedYear, index, 1).toLocaleString('default', { month: 'long' })}
+              {new Date(0, index).toLocaleString("default", { month: "long" })}
             </option>
+
           ))}
         </select>
-        <div className="relative">
-          <select className="px-3 py-1 bg-blue-500 text-white rounded" value={selectedYear} onChange={handleYearChange}>
-            {Array.from({ length: 50 }, (_, index) => (
-              <option key={index} value={selectedYear - 25 + index}>
-                {selectedYear - 25 + index}
-              </option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg
-              className="h-4 w-4 text-gray-500"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M6.293 7.293a1 1 0 011.414 0L10 10.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414zM10 4a1 1 0 011 1v5a1 1 0 11-2 0V5a1 1 0 011-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        </div>
-        <button
-          className="px-3 py-1 bg-blue-500 text-white rounded"
-          onClick={() => setSelectedDate(new Date(selectedYear, selectedMonth + 1, 1))}
-        >
-          Next
-        </button>
+
+        <select className="text-xl font-bold ml-4 cursor-pointer" value={currentYear} onChange={handleYearChange}>
+
+          {Array.from({ length: 10 }, (_, index) => (
+
+            <option key={index} value={today.getFullYear() - 8 + index}>
+              {today.getFullYear() - 8 + index}
+
+            </option>
+          ))}
+
+        </select>
+
       </div>
-      <div className="grid grid-cols-7 gap-2">
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div className="p-2 border border-gray-300 text-center font-bold" key={day}>
+
+      <div className="grid grid-cols-7 gap-1 ">
+
+        {daysOfWeek.map((day, index) => (
+
+          <div key={index} className="font-bold">
             {day}
           </div>
+
         ))}
-        {generateCalendar()}
+
+        {days}
+
       </div>
+
+      {showDialog && <Select selectedDate={selectedDate} selectedMonth={currentMonth} selectedYear={currentYear} onClose={() => setShowDialog(false)} />}
     </div>
   );
 };
