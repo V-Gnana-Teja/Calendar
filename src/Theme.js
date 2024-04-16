@@ -1,4 +1,4 @@
-/* export const themes = {
+export const themes = {
 
     light: {
       background: '#ffffff',
@@ -10,4 +10,4 @@
       color: '#ffffff',
     }
   };
-   */
+  
