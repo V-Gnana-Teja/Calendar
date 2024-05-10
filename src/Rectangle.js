@@ -1,5 +1,7 @@
 import React from 'react';
 
+
+
 const Rectangle = ({ value, onChange, color }) => {
 
   return (
@@ -35,7 +37,18 @@ const Rectangle = ({ value, onChange, color }) => {
           
       </div>
 
+      
+
       <div className="ml-2 font-bold">{`${Math.round(value)}%`}</div>
+            <div className='ml-2 font-bold flex flex-col bg-red-600 md:flex-col-2 w-full h-full absolute top-0 left-0 opacity-0 cursor-pointer md:w-1/2 md:h-1/2 md:top-0 md:left-0 md:opacity-0 lg:w-3 lg:h-3 lg:top-0 lg:left-0 lg:opacity-0 '>
+           <h1>
+           {`${Math.round (value)}%`} Click here!
+            </h1>
+
+            
+
+            </div>  
+
     </div>
   );
 };

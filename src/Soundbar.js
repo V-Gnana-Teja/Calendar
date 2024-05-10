@@ -14,12 +14,14 @@ const Soundbar = () => {
     setColor(newColor);
   };
 
+
   return (
 
     <div className="flex flex-col justify-start items-center p-6 mt-14">
 
       <Rectangle value={volume} onChange={handleVolumeChange} color={color} />
 
+      
       <div className="mt-4">
         <label htmlFor="colorPicker">Choose a color: </label>
 
@@ -30,7 +32,14 @@ const Soundbar = () => {
           value={color}
           onChange={(e) => handleColorChange(e.target.value)}
           className="cursor-pointer"
+
         />
+
+        <div>
+          
+        </div>
+        
+        
 
       </div>
     </div>

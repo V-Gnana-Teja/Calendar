@@ -13,14 +13,27 @@ export const ThemeProvider = ({ children }) => {
     setTheme(theme === themes.light ? themes.dark : themes.light);
   };
 
+  <SeriesCollectionDirective>
+        <SeriesDirective dataSource={data} xName='month' yName='sales' type='Column' name='Sales'/>
+  </SeriesCollectionDirective>
+
+
+  
+
+  
   return (
+
+    
 
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
 
     </ThemeContext.Provider>
+
     
+
     
+
 
 
   );
